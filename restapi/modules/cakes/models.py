@@ -2,44 +2,42 @@ __author__ = 'haukurk'
 
 from restapi.modules.base import BaseModel, db
 from marshmallow import Serializer, fields
+from sqlalchemy import Column,String,Float,Integer,DateTime,Date,Time
+from DateTime import DateTime
 
 
 class Cake(BaseModel):
     """
     Cake class that defines how cake object are kept in the database.
     """
-    id = db.Column(db.Integer, primary_key=True)
-    cakename = db.Column(db.String(80), unique=True)
-    bakername = db.Column(db.String(120), unique=False)
-    price = db.Column(db.Float)
+    __tablename__='exampletest'
+    ex1 = db.Column(db.String(40), unique=False)
+    ex2 = db.Column(db.String(40), unique=False)
+    ex3 = db.Column(db.String(50), unique=False)
+    ex4 = db.Column(db.Date)
+    ex5 = db.Column(db.Time) 
 
-    def __init__(self, cakename, bakername, price):
-        self.cakename = cakename
-        self.bakername = bakername
-        self.price = price
+    def __init__(self,ex1,ex2,ex3,ex4,ex5):
+        self.ex1 = ex1
+        self.ex2 = ex2
+        self.ex3 = ex3
+        self.ex4 = ex4
+        self.ex5 = ex5
 
     def as_dict(self):
-        #return {c.name: getattr(self, c.name) for c in self.__table__.columns} # Python 2.6 does not support this.
-        cake_dict = {}
-        for c in self.__table__.columns:
-            cake_dict[c.name] = getattr(self, c.name)
-        return cake_dict
-
+        Cake_dict = {}
+        for C in self.__table__.columns:
+            Cake_dict[C.ex3] = getattr(self, C.ex3)
+        return Cake_dict  
+         
     def __repr__(self):
-        return '<Cake %r>' % self.cakename
+        return "<Cake %s>" % self.ex3
 
 
 class CakeSerializer(Serializer):
     """
     Serializer for the SQLALchemy class. The magic is performed with marshmallow module.
     """
-    price_range = fields.Method("format_price_range")
-
-    @staticmethod
-    def format_price_range(cake):
-        if cake.price > 100:
-            return "expensive"
-        return "cheap"
 
     class Meta:
-        fields = ('id', 'cakename', 'bakername', 'price', "price_range", )
+        fields = (ex1,ex2,ex3,ex4,ex5)
