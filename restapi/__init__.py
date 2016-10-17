@@ -22,7 +22,8 @@ API_CONFIG = config.defined[config_name]
 app.config.from_object(API_CONFIG)
 
 # Setup SQLAlchemy
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://dbname:dbpasswd@localhost:3306/dbname?use_unicode=true&charset=utf8' 
+db = SQLAlchemy(app)   #用mysql作为数据库存储
 
 # Logging
 log = Logger(__name__)
