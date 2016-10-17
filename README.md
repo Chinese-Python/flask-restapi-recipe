@@ -23,15 +23,23 @@ python manage.py -g 0.0.0.0 "test key 0907"
 ###API特点说明
 
 **1、可实现多条件、多字段查询**
+
 **2、为特定IP生成唯一的API key**
+
 **3、多模块可拓展性，随时添加新的数据模块**
+
 **4、网页地址及端口**
 
 ###API key的管理
 
 **1、生成一个API key，0.0.0.0 表示所有用户可以获取** 
+
 ./run.py -g IP -c "this IP is for the engineer on floor 3"
+
 **2、删除一个API key** 
+
 ./run -d APIKEYID
+
 **3、显示所有的API key** 
+
 ./run -a
