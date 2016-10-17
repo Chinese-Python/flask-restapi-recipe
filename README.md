@@ -1,110 +1,37 @@
-[![Build Status](https://travis-ci.org/haukurk/flask-restapi-recipe.svg?branch=master)](https://travis-ci.org/haukurk/flask-restapi-recipe)
+###API 的使用
 
-# A simple recipe for a RESTful API packaged with an API key authentication.
-This recipe is a really simple seed for a RESTful API, powered by Flask and SQLALchemy.
-It's a perfect starting point if you are in need of an API, quickly... At least I think so!
+**1、初始化数据库
 
-The recipe includes the following features:
-* A naive method of API versioning.
-* Ability to switch between a development and Default application config, by using environmental variables.
-* Simple test cases in a form of unit tests.
-* Authentication component which you can decorate API methods with.
-    * Manage.py, manages keys and allowed IPs (where 0.0.0.0 is considered all IPs).
-    * The decorator *@require_app_key*, from *restapi.components.auth.decorators* then only allows keys generated with manage.py
-* API control, run.py:
-    * *-r* runs a development server
-    * *-i* initializes the database based on imported SQLALchemy models
-    * *-z* creates a interactive console, with flask app imported.
+在run.py的同级目目录中运行：
 
-# Quick Start
-Use virtual environment, please.
-```
-$> pip install virtualenv
-$> virtualenv venv/
-```
-Activate environment.
-```
-$> . venv/bin/active
-```
-Install requirements for the project
-```
-$> pip install -r requirements.txt
-```
-Init the default SQLite database:
-```
-$> python run.py -i
-```
-Run the development server
-```
-$> python run.py -r
-```
+python run.py -i
 
-# Create you first API key
-Generate an key for localhost (127.0.0.1)
-```
-$> python manage.py -g 127.0.0.1 "localhost Development Key"
-```
-You should get an output like:
-```
-Issued a key 'eMtUDd3ZF19M9Dk7fOgSKmpuqX0KV6sHDwfrydiN0gk' for the IP '127.0.0.1' (localhost development key) with KEY ID: 2.
-```
+**2、使用Gunicorn运行服务器(以端口号5001为例)
 
-Next, try to insert a cake object to the database (it's authentication protected by default) by using *curl*:
-```
-$> curl -X POST -d "cakename=Test Cake&baker=Haukur Kristinsson&price=200" http://localhost:5000/api/v1.1/cakes/?key=eMtUDd3ZF19M9Dk7fOgSKmpuqX0KV6sHDwfrydiN0gk
-```
-You should get an status=success (Remember JSEND standard) output:
-```
-{
-  "data": {
-    "cakes": {
-      "bakername": "Haukur Kristinsson",
-      "cakename": "Test Cake",
-      "id": 6,
-      "price": 200.0,
-      "price_range": "expensive"
-    }
-  },
-  "status": "success"
-}
-```
+在screen中操作，如screen -S flaskAPI,在screen中运行:
 
-# Authentication Method
+gunicorn -w4 -b0.0.0.0:5001 restapi:app
 
-Authentication for this API is handled by a classic "API key" methodology which allows the client to pass the key as an URL parameter *key* (i.e. http://api/?key=KEY).
-Nothing fancy about that... But its should be noted that this method is only secure while using encrypted channels between clients and the web server.
+**3、为固定IP生成一个API Key（以120.67.218.31为例）
 
-When issuing a API key, you can either specify a IP address that is to be allowed when using the key, or by using the IP 0.0.0.0 to allow all IP addresses.
+如果ip为0.0.0.0，则任何ip的用户均有权限 ，退出screen在session中运行：
 
-Summary of manage.py (authentication manager):
-* To generate a API key you use
-    ```
-    ./run.py -g IP -c "this IP is for the engineer on floor 3" (If you define IP as 0.0.0.0 you are allowing the API key to be used from any remote IP)
-    ```
-* To remove a API key you use
-    ```
-    ./run -d APIKEYID (APIKEYIDs are shown when running run.py with the -a flag)
-    ```
-* To show all issued keys use
-    ```
-    ./run -a
-    ```
+python manage.py -g 120.67.218.31 "My Flask Key0906" 
+python manage.py -g 0.0.0.0 "test key 0907"
 
-# Testing
 
-To run unittest classes simply run them with nose:
-```
-nosetests -v tests/unittest_basics.py
-```
+###API特点说明
 
-# JSON responses
+**1、可实现多条件、多字段查询
+**2、为特定IP生成唯一的API key
+**3、多模块可拓展性，随时添加新的数据模块
+**4、网页地址及端口
 
-I advise to keep responses formats under control and to stay consistent at all times.
-You could follow the JSend specification (http://labs.omniti.com/labs/jsend), or at least base you output format from there.
+###API key的管理
 
-# Example API methods
-I included 2 API methods, just as an example of how you can use it:
-* cakes modules (/api/v<float:version/cakes)
-* weather module (/api/v<float:version>/weather)
-
-I'm not going to into detail of each one, you should just look at the source code.
+**1、生成一个API key，0.0.0.0 表示所有用户可以获取 
+./run.py -g IP -c "this IP is for the engineer on floor 3"
+**2、删除一个API key 
+./run -d APIKEYID
+**3、显示所有的API key 
+./run -a
