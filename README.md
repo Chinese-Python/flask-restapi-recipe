@@ -17,6 +17,7 @@ gunicorn -w4 -b0.0.0.0:5001 restapi:app
 如果ip为0.0.0.0，则任何ip的用户均有权限 ，退出screen在session中运行：
 
 python manage.py -g 120.67.218.31 "My Flask Key0906" 
+
 python manage.py -g 0.0.0.0 "test key 0907"
 
 
